@@ -2,14 +2,13 @@
 # Only needed for access to command line arguments
 import sys
 
-from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
-from PyQt5.uic import loadUi
+from PyQt5.QtGui import *
 from PyQt5.QtSql import *
-
+from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.uic import loadUi
 
 
 class Main(QMainWindow):
@@ -104,4 +103,6 @@ if __name__ == '__main__':
     window = Main()
     window.show()
     app.exec_()
+
+    #hello
     
