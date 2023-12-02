@@ -45,24 +45,32 @@ class CalendarClass(QWidget):
         
     def handleDateDoubleClick(self, dateSelected):
         # Assuming self is an instance of CalendarClass
-        event_popup = EventPopup(self)  # Create an instance of EventPopup
-        event_popup.setDateInfo(dateSelected.toString('MMMM d, yyyy'))  # Set date info in EventPopup
+        
         date_str = dateSelected.toString('MMMM d, yyyy')
         formatted_date = dateSelected.toPyDate().strftime("%Y-%m-%d")
 
         # Run query for title and desc info
         titles, infos = self.fetchEventData(formatted_date)
-
+          # Set date info in EventPopup
         # Create an instance of EventPopup
         
         if titles and infos:
             # If there is an SQL entry, pass the retrieved information to EventPopup
             title = titles[0]
             info = infos[0]
+            event_popup = EventPopup(self, edit_mode = True)  # Create an instance of EventPopup
+            event_popup.setDateInfo(dateSelected.toString('MMMM d, yyyy'))
+            
+            print("titles exist: ", event_popup.edit_mode)
             event_popup.setDateInfo(date_str, title, info)
+            
         else:
             # If no SQL entry, just pass the date information to EventPopup
+            event_popup = EventPopup(self, edit_mode = False)  # Create an instance of EventPopup
+            event_popup.setDateInfo(dateSelected.toString('MMMM d, yyyy'))
+            print("titles no exist: ", event_popup.edit_mode)
             event_popup.setDateInfo(date_str)
+            
         event_popup.exec_()  # Show the EventPopup
     
     def deleteEvent(self):
@@ -137,14 +145,66 @@ class CalendarClass(QWidget):
         pass
     
 class EventPopup(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, edit_mode=False):
         super(EventPopup, self).__init__(parent)
         loadUi("eventpopup.ui", self)
 
+        self.edit_mode = edit_mode
+        print("Popup Editmode: ", self.edit_mode)
         # Connect the button box signals to slots
-        self.dateAddEventDateButton.accepted.connect(self.saveData)
+        if self.edit_mode is True:
+            self.dateAddEventDateButton.accepted.connect(self.editData)
+        else:
+            self.dateAddEventDateButton.accepted.connect(self.saveData)
         self.dateAddEventDateButton.rejected.connect(self.cancel)
+    
+    def editData(self):
+         # This method is called when the "Save" button is clicked
+        title_text = self.dateAddEventTitleInfo.text()
+        desc_text = self.dateAddEventDescInfo.toPlainText()
+        date_text = self.dateAddEventDateInfo.text()
+        print("here", title_text)
+        # Convert date_text to a datetime object. For the front end
+        date_object = datetime.strptime(date_text, "%B %d, %Y")
+
+        # Format the datetime object as a string in the desired format. For the SQL server
+        formatted_date = date_object.strftime("%Y-%m-%d")
         
+        
+        enterEventTableQuery = QSqlQuery()
+        date_text = self.dateAddEventDateInfo.text()
+
+        
+        enterEventTableQuery.prepare(
+            """
+            UPDATE Event
+            SET title = :title, info = :info
+            WHERE date = :date
+            
+            """
+        )
+        enterEventTableQuery.bindValue(":title", title_text)
+        enterEventTableQuery.bindValue(":info", desc_text)
+        enterEventTableQuery.bindValue(":date", formatted_date)
+        print("add text:", date_text)
+        
+        if enterEventTableQuery.exec_():
+            print("Data saved successfully")
+            # Close the dialog
+            self.accept()
+        else:
+            print("Error saving data:", enterEventTableQuery.lastError().text())
+
+        
+        # Display the text in the console (replace this with your database logic)
+        print("Title:", title_text)
+        print("Description:", desc_text)
+
+        # Update quick info when saving new event
+        CalendarClass.calendarDateChanged(self.parent())
+        
+        # Close the dialog
+        self.accept()
 
     def saveData(self):
         # This method is called when the "Save" button is clicked
