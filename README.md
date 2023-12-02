@@ -9,3 +9,6 @@ To install the requirements please use the provided requirements.txt to esure yo
 The command to install the requirements should be as follows:
 
 #pip install -r requirements.txt
+
+To add an event, double click the desired date or press enter. This will bring up a pop-up that will allow you to add or edit your events. 
+To view your events, jsut select a date and it will be displayed in the quick event info panel.
