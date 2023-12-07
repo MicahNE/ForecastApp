@@ -4,14 +4,23 @@ from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtSql import *
 from datetime import datetime
+import AccessControl
+
 # CalendarClass.py
 
 
+
 class CalendarClass(QWidget):
+    
+    
     def __init__(self, main_instance):
         super(CalendarClass, self).__init__()
         self.main_instance = main_instance
         self.connect_signals()
+        self.user_id = AccessControl.AccessControl.get_current_user_id()
+        print("Current user_id:", self.user_id)
+        
+     
         
 
     def connect_signals(self):
@@ -100,12 +109,13 @@ class CalendarClass(QWidget):
             """
             SELECT title, info
             FROM Event
-            WHERE date = :date
+            WHERE date = :date AND user_id = :user_id
             """
         )
 
-        # Bind the date parameter
+        # Bind the date and user_id parameters
         quickEventTableQuery.bindValue(":date", date)
+        quickEventTableQuery.bindValue(":user_id", AccessControl.AccessControl.get_current_user_id())
 
         # Execute the query
         quickEventTableQuery.exec()
@@ -179,13 +189,13 @@ class EventPopup(QDialog):
             """
             UPDATE Event
             SET title = :title, info = :info
-            WHERE date = :date
-            
+            WHERE date = :date AND user_id = :user_id
             """
         )
         enterEventTableQuery.bindValue(":title", title_text)
         enterEventTableQuery.bindValue(":info", desc_text)
         enterEventTableQuery.bindValue(":date", formatted_date)
+        enterEventTableQuery.bindValue(":user_id", AccessControl.AccessControl.get_current_user_id())
         print("add text:", date_text)
         
         if enterEventTableQuery.exec_():
@@ -225,13 +235,15 @@ class EventPopup(QDialog):
         
         enterEventTableQuery.prepare(
             """
-            INSERT INTO Event (title, info, date)
-            VALUES (:title, :info, :date)
+            INSERT INTO Event (title, info, date, user_id)
+            VALUES (:title, :info, :date, :user_id)
             """
         )
         enterEventTableQuery.bindValue(":title", title_text)
         enterEventTableQuery.bindValue(":info", desc_text)
         enterEventTableQuery.bindValue(":date", formatted_date)
+        enterEventTableQuery.bindValue(":user_id", AccessControl.AccessControl.get_current_user_id())
+        
         print("add text:", date_text)
         
         if enterEventTableQuery.exec_():
@@ -286,11 +298,12 @@ class DeletePopup(QDialog):
             deleteEventTableQuery.prepare(
                 """
                 DELETE FROM Event
-                WHERE date = :date
+                WHERE date = :date AND user_id = :user_id
                 """
             )
 
             deleteEventTableQuery.bindValue(":date", self.formatted_date)
+            deleteEventTableQuery.bindValue(":user_id", AccessControl.AccessControl.get_current_user_id())
             deleteEventTableQuery.exec()
             print("Deleted:", self.formatted_date)
 
