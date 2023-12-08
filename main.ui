@@ -64,7 +64,7 @@
    <widget class="QToolButton" name="addTaskButton">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>310</x>
       <y>630</y>
       <width>31</width>
       <height>31</height>
@@ -143,8 +143,38 @@
    <widget class="QToolButton" name="deleteEventButton">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>340</x>
       <y>390</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>40</width>
+      <height>40</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="deleteListItem">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>630</y>
       <width>31</width>
       <height>31</height>
      </rect>

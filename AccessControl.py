@@ -66,14 +66,6 @@ class AccessControl:
             }
             return user_data
 
-        if query.next():
-            user_data = {
-                'user_id': query.value('user_id'),
-                'salt': query.value('salt'),
-                'hashed_password': query.value('hashed_password')
-            }
-            return user_data
-
         return None  # User not found
     
     def __init__(self):

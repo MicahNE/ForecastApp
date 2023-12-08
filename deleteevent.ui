@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>390</width>
-    <height>274</height>
+    <width>640</width>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="deleteEventButtons">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>190</y>
+     <x>230</x>
+     <y>240</y>
      <width>191</width>
      <height>39</height>
     </rect>
@@ -29,10 +29,10 @@
   <widget class="QLineEdit" name="deleteEventQuestionText">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>20</y>
-     <width>331</width>
-     <height>231</height>
+     <x>60</x>
+     <y>40</y>
+     <width>521</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="font">
