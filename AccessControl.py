@@ -11,6 +11,7 @@ import CalendarClass
 import main
 import secrets
 import hashlib
+import register
 
 class AccessControl:
     user_id = None
@@ -102,7 +103,7 @@ class LoginDialog(QDialog):
 
         def show_create_account_dialog(self):
             self.close()
-            create_account_dialog = CreateAccountDialog()
+            create_account_dialog = register.CreateAccountDialog()
             create_account_dialog.exec_()  # Show the create account dialog
             
         def show_success_message(self, message):
@@ -119,50 +120,7 @@ class LoginDialog(QDialog):
                 print("User authenticated successfully!")
                 self.accept()  # Close the login dialog
             else:
-                print("Authentication failed. Invalid username or password.")
-
-            
-        
-
-class CreateAccountDialog(QDialog):
-    def __init__(self):
-        super(CreateAccountDialog, self).__init__()
-        loadUi("createaccount.ui", self)
-        self.init_ui()
-
-    def init_ui(self):
-        self.createAccountButton.clicked.connect(self.create_account)
-        self.backToLoginPageButton.clicked.connect(self.show_login_dialog)
-
-    def create_account(self):
-        username = self.createUserNameLineEdit.text()
-        password = self.createPasswordLineEdit.text()
-        
-
-        
-        success = PasswordHandler.create_user(self, username, password)
-
-        if success:
-            print("Account created successfully!")
-            self.close()
-
-            # Show the login dialog with a success message
-            login_dialog = LoginDialog()
-            login_dialog.show_success_message("Account created successfully!")
-            login_dialog.exec_()
-        else:
-            print("Account creation failed. Handle the error as needed.")
-            
-    
-
-    def show_login_dialog(self):
-        # Close the create account dialog
-        self.close()
-
-        # Show the login dialog
-        login_dialog = LoginDialog()
-        login_dialog.exec_()
-    
+                print("Authentication failed. Invalid username or password.")    
     
 class PasswordHandler:
     @staticmethod

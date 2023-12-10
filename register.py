@@ -39,7 +39,13 @@ class CreateAccountDialog(QDialog):
 
         # Perform account creation logic (add salt, hash password, store in database, etc.)
         # Example: Assume you have a function in AccessControl.py to handle account creation
-        success = AccessControl.create_user(username, password)
+
+        if self.username_exists(username):
+            QMessageBox.warning(self, "Username Exists", "Username already exists. Please choose a different username.")
+            return
+
+        else:
+            success = AccessControl.create_user(username, password)
 
         if success:
             print("Account created successfully!")
@@ -47,6 +53,17 @@ class CreateAccountDialog(QDialog):
         else:
             print("Account creation failed. Handle the error as needed.")
 
+    @staticmethod
+    def username_exists(username):
+        query = QSqlQuery()
+        query.prepare("SELECT user_id FROM User WHERE username = :username")
+        query.bindValue(":username", username)
+
+        if query.exec_() and query.next():
+            # If a record is found, the username already exists
+            return True
+
+    
     def show_login_dialog(self):
         # Close the create account dialog
         self.close()

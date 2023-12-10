@@ -22,8 +22,7 @@ class Main(QMainWindow):
         self.access_control = AccessControl.LoginDialog()
 
         self.show_login_dialog()
-        if not self.is_authenticated:
-            sys.exit()
+        
         
         loadUi("main.ui", self)
         self.listItems()
@@ -70,9 +69,7 @@ class Main(QMainWindow):
         if login_dialog.exec_() == QDialog.Accepted:
             print("User logged in successfully!")
             self.is_authenticated = True
-        else:
-            print("User canceled login. Exiting...")
-            self.is_authenticated = False    
+        
 
     # Add other methods here
 

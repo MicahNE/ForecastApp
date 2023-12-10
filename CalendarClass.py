@@ -19,6 +19,7 @@ class CalendarClass(QWidget):
         self.connect_signals()
         self.user_id = AccessControl.AccessControl.get_current_user_id()
         print("Current user_id:", self.user_id)
+        self.calendarDateChanged()
         
      
         
