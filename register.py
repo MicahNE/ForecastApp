@@ -27,11 +27,12 @@ class CreateAccountDialog(QDialog):
     def __init__(self):
         super(CreateAccountDialog, self).__init__()
         loadUi("createaccount.ui", self)
+        self.setWindowTitle("Forecast Create Account")
         self.init_ui()
 
     def init_ui(self):
         self.createAccountButton.clicked.connect(self.create_account)
-        self.backToLoginPageButton.clicked.connect(self.show_login_dialog)
+        self.backToLoginPageButton.clicked.connect(self.close)
 
     def create_account(self):
         username = self.createUserNameLineEdit.text()

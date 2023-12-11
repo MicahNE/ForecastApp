@@ -90,9 +90,11 @@ class AccessControl:
         pass
 
 class LoginDialog(QDialog):
+    
         def __init__(self):
             super(LoginDialog, self).__init__()
             main.loadUi("login.ui", self)
+            self.setWindowTitle("Forecast Login")
             self.init_ui()
 
         def init_ui(self):
@@ -102,9 +104,22 @@ class LoginDialog(QDialog):
         
 
         def show_create_account_dialog(self):
-            self.close()
             create_account_dialog = register.CreateAccountDialog()
-            create_account_dialog.exec_()  # Show the create account dialog
+            result = create_account_dialog.exec_()  # Show the create account dialog
+
+            if result == QDialog.Accepted:
+                # The user successfully created an account
+                self.show_success_message("Account created successfully! You can now log in.")
+            else:
+                # The user canceled the account creation or an error occurred
+                print("Account creation canceled or failed.")
+
+            # Clear the user inputs in the login dialog
+            self.userNameLineEdit.clear()
+            self.passwordLineEdit.clear()
+
+            # Show the login dialog again
+            self.show()
             
         def show_success_message(self, message):
             QMessageBox.information(self, "Success", message)

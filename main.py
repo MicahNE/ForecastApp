@@ -12,35 +12,29 @@ import CalendarClass
 import AccessControl
 
 
+
 class Main(QMainWindow):
     def __init__(self):
         
         super(Main, self).__init__()
-        self.create_db()
-
+        self.open_db()
+        app.setWindowIcon(QIcon("appicon.png"))
+        
         # Instantiate AccessControl inside Main
-        self.access_control = AccessControl.LoginDialog()
-
         self.show_login_dialog()
         
+        if self.is_authenticated:
+            loadUi("main.ui", self)
+            self.listItems()
+            self.todo_listWidget.itemChanged.connect(self.handleItemChanged)
+            self.setWindowTitle("Forecast")
         
-        loadUi("main.ui", self)
-        self.listItems()
-        self.todo_listWidget.itemChanged.connect(self.handleItemChanged)
-        
-        
-        # Set the background color for the main window
-        # self.setStyleSheet("background-color: lightgrey;")
-        
-        
-        #date selection on calendar
+        else:
+            sys.exit(0)
+            
         self.calendar_handler = CalendarClass.CalendarClass(self)
-        
-        
-        
-        # Add List Button
         self.addTaskButton.clicked.connect(self.addList)
-        self.deleteListItem.clicked.connect(self.deleteSelectedItem)
+        self.deleteListItem.clicked.connect(self.deleteSelectedItem)              
     
     def deleteSelectedItem(self):
         selected_items = self.todo_listWidget.selectedItems()
@@ -69,59 +63,27 @@ class Main(QMainWindow):
         if login_dialog.exec_() == QDialog.Accepted:
             print("User logged in successfully!")
             self.is_authenticated = True
-        
+
+        else:
+            print("User canceled login. Staying on the login page...")
+            self.is_authenticated = False
 
     # Add other methods here
 
 
        
     # SQLite DB creation
-    def create_db(self):
+    def open_db(self):
         forecastDB = QSqlDatabase.addDatabase('QSQLITE')
 
         forecastDB.setDatabaseName('Forecastdb')
-
-        
+       
         if not forecastDB.open():
             print("Qt failed to open database")
             return False
         else:
             print("Database Connected")
             
-            
-
-        # # Table Creation
-        # createTableQuery = QSqlQuery()
-
-        
-        # createTableQuery.exec(
-        #     """
-        #     CREATE TABLE IF NOT EXISTS User (
-        #         user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        #         username TEXT UNIQUE NOT NULL,
-        #         hashed_password TEXT NOT NULL,
-        #         salt TEXT NOT NULL
-        #     );
-
-        #     CREATE TABLE IF NOT EXISTS Event (
-        #         event_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        #         title TEXT NOT NULL,
-        #         info TEXT NOT NULL,
-        #         date VARCHAR(10) NOT NULL,
-        #         user_id INTEGER,
-        #         FOREIGN KEY (user_id) REFERENCES User(user_id)
-        #     );
-        #     """
-        # )
-        # This is debug code
-        print(forecastDB.tables())
-
-        if not forecastDB.open():
-            print("Qt failed to open database")
-            return False
-        else:
-            print("Database Connected")
-            return True
 
     def listItems(self):
         self.todo_listWidget.clear()
@@ -239,3 +201,4 @@ if __name__ == '__main__':
     window = Main()
     window.show()
     app.exec_()
+    
