@@ -46,7 +46,7 @@ class CreateAccountDialog(QDialog):
             return
 
         else:
-            success = AccessControl.create_user(username, password)
+            success = AccessControl.PasswordHandler.create_user(self, username, password)
 
         if success:
             print("Account created successfully!")
